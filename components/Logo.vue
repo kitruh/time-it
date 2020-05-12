@@ -24,6 +24,18 @@
     <button @click="this.toggleRepeat">Toggle Repeat</button>
     {{repeat}}
     <div class="time-section"><span>{{timeLeft}}</span></div>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- time-it bottom add -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-5363460947226243"
+         data-ad-slot="7703035200"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
   </div>
 </template>
 <script>
