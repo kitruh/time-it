@@ -13,7 +13,12 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    ],
+    script: [
+      {"data-ad-client":"ca-pub-5363460947226243",
+        async: "async",
+        src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'}
+    ],
   },
   /*
   ** Customize the progress-bar color
