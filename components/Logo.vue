@@ -6,28 +6,38 @@
     <label>Time</label>
     <input v-model="timeToAdd">
     <label>Type</label>
-    <input v-model="typeToAdd">
+    <select v-model="typeToAdd">
+      <option disabled value="">Please select one</option>
+      <option>Workout</option>
+      <option>Rest</option>
+    </select>
 
     <div v-for="segment in timeSegments" :key="segment.id">
-      time:{{ segment.time }} id:{{ segment.id }} type:{{ segment.type }} <button @click="moveUp(segment.id)">up</button> <button @click="moveDown(segment.id)">down</button>
+      time:{{ segment.time }} seconds, type:{{ segment.type }}
+      <button @click="moveUp(segment)">up</button>
+      <button @click="moveDown(segment)">down</button>
+        <button @click="deleteFromList(segment)">delete</button>
     </div>
 
     <button @click="this.start">start</button>
     <button @click="this.stopInterval">Stop</button>
-    <button @click="this.toggleRepeat">Toggle Repeat</button> {{repeat}}
-    <div>{{timeLeft}}</div>
+    <button @click="this.toggleRepeat">Toggle Repeat</button>
+    {{repeat}}
+    <div class="time-section"><span>{{timeLeft}}</span></div>
   </div>
 </template>
 <script>
-  import { v4 as uuidv4 } from 'uuid';
+  import { v4 as uuidv4 } from 'uuid'
   import Tone from 'tone'
+
   export default {
-    data() {
+    data () {
       return {
         timeSegments: [
-          {id: uuidv4(), time: 3, type: 'start'},
-          {id: uuidv4(), time: 60, type: 'set'},
-          {id: uuidv4(), time: 20, type: 'set'},
+          { id: uuidv4(), time: 4, type: 'start' },
+          { id: uuidv4(), time: 40, type: 'set' },
+          { id: uuidv4(), time: 20, type: 'set' },
+          { id: uuidv4(), time: 3, type: 'set' },
         ],
         showTimeLeft: false,
         timeLeft: 0,
@@ -36,74 +46,104 @@
         timeToAdd: 0,
         typeToAdd: '',
         repeat: false,
-      };
+      }
     },
     methods: {
-      async start() {
-        if(this.interval != null){
-          return;
+      async start () {
+        if (this.interval != null) {
+          return
         }
-        let index = 0;
-        this.showTimeLeft = true;
-        this.timeLeft = this.timeSegments[index].time;
-        this.countDownType = this.timeSegments[index].type;
-        this.playTone()
+        let index = 0
+        this.showTimeLeft = true
+        this.timeLeft = this.timeSegments[index].time
+        this.countDownType = this.timeSegments[index].type
 
         this.interval = setInterval(() => {
-          if (this.timeLeft > 0) {
-            this.timeLeft -= 1;
-            if(this.timeLeft <=3){
-              this.playTone()
+          if (this.timeLeft > 1) {
+            this.timeLeft -= 1
+            if (this.timeLeft <= 3) {
+              this.playCountDownTone()
             }
           } else {
             if (index === this.timeSegments.length - 1) {
-              if(!this.repeat){
-                this.stopInterval();
-              }else{
-                index = 0;
-                this.timeLeft = this.timeSegments[index].time;
-                this.countDownType = this.timeSegments[index].type;
+              if (!this.repeat) {
+                this.stopInterval()
+              } else {
+                index = 0
+                this.timeLeft = this.timeSegments[index].time
+                this.countDownType = this.timeSegments[index].type
               }
 
             } else {
-              index += 1;
-              this.timeLeft = this.timeSegments[index].time;
-              this.countDownType = this.timeSegments[index].type;
-              this.playTone()
+              index += 1
+              this.timeLeft = this.timeSegments[index].time
+              this.countDownType = this.timeSegments[index].type
+              this.playStartTone()
             }
           }
-        }, 1000);
+        }, 1000)
 
       },
-      playTone(){
+      playCountDownTone () {
         const synth = new Tone.PolySynth(6, Tone.Synth, {
-          oscillator : {
-            type : "sine"
+          oscillator: {
+            type: 'sine'
           }
-        }).toMaster();
-        synth.triggerAttackRelease(["C4"], "16n");
-        synth.triggerAttackRelease(["E4"], "16n", '+16n');
-        synth.triggerAttackRelease(["G4"], "16n", '+8n');
+        }).toMaster()
+        synth.triggerAttackRelease(['C4'], '16n')
+        synth.triggerAttackRelease(['E4'], '16n', '+16n')
+        synth.triggerAttackRelease(['G4'], '16n', '+8n')
       },
-      stopInterval(){
-        clearInterval(this.interval);
+      playStartTone () {
+        const synth = new Tone.PolySynth(6, Tone.Synth, {
+          oscillator: {
+            type: 'sine'
+          }
+        }).toMaster()
+        synth.triggerAttackRelease(['C6'], '16n')
+      },
+      stopInterval () {
+        clearInterval(this.interval)
         this.interval = null
       },
-      addSegment(){
-        this.timeSegments.push({time: this.timeToAdd, type: this.typeToAdd, id: uuidv4()})
+      addSegment () {
+        this.timeSegments.push({ time: this.timeToAdd, type: this.typeToAdd, id: uuidv4() })
       },
-      moveUp(id){
-      console.log("move up", id)
-      },
-      moveDown(id){
-        console.log("move down", id)
+      moveUp (segment) {
+        const currentIndex = this.timeSegments.indexOf(segment)
+        let newIndex
+        if (currentIndex > 0) {
+          newIndex = currentIndex - 1
+        } else {
+          newIndex = currentIndex
+        }
+
+        this.move(currentIndex, newIndex, this.timeSegments)
 
       },
-      toggleRepeat(){
+      move (from, to, array) {
+        array.splice(to, 0, array.splice(from, 1)[0])
+      },
+      moveDown (segment) {
+        const currentIndex = this.timeSegments.indexOf(segment)
+        let newIndex
+        if (currentIndex < this.timeSegments.length - 1) {
+          newIndex = currentIndex + 1
+        } else {
+          newIndex = currentIndex
+        }
+
+        this.move(currentIndex, newIndex, this.timeSegments)
+
+      },
+      deleteFromList(segment){
+
+      },
+      toggleRepeat () {
         this.repeat = !this.repeat
       }
     },
-  };
+  }
 </script>
 <style lang="scss">
 
@@ -111,5 +151,16 @@
     button {
       color: green;
     }
+  }
+
+  .time-section {
+    width: 100%;
+    background-color: green;
+    color: white;
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    font-size: 10em;
+    justify-content: center;
   }
 </style>
