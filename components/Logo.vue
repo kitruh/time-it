@@ -12,10 +12,10 @@
       <option>Rest</option>
     </select>
 
-    <div v-for="segment in timeSegments" :key="segment.id">
+    <div v-for="(segment, index) in timeSegments" :key="segment.id">
       time:{{ segment.time }} seconds, type:{{ segment.type }}
-      <button @click="moveUp(segment)">up</button>
-      <button @click="moveDown(segment)">down</button>
+      <button @click="moveUp(segment)" :disabled="isFirstItem(index)">up</button>
+      <button @click="moveDown(segment)" :disabled="isLastItem(index)">down</button>
         <button @click="deleteFromList(segment)">delete</button>
     </div>
 
@@ -137,10 +137,16 @@
 
       },
       deleteFromList(segment){
-
+        this.timeSegments.splice(this.timeSegments.indexOf(segment), 1);
       },
       toggleRepeat () {
         this.repeat = !this.repeat
+      },
+      isLastItem(index){
+       return index === this.timeSegments.length - 1
+      },
+      isFirstItem(index){
+        return index === 0;
       }
     },
   }
