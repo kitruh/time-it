@@ -1,5 +1,5 @@
 <template>
-  <div class="time-wrapper">
+  <div class="time-wrapper" @touchstart="this.touchStart">
     <h1>Timer</h1>
     <button @click="addSegment">Add Segment</button>
 
@@ -19,7 +19,7 @@
         <button @click="deleteFromList(segment)">delete</button>
     </div>
 
-    <button @click="this.start">start</button>
+    <button @click="this.start" >start</button>
     <button @click="this.stopInterval">Stop</button>
     <button @click="this.toggleRepeat">Toggle Repeat</button>
     {{repeat}}
@@ -159,6 +159,9 @@
       },
       isFirstItem(index){
         return index === 0;
+      },
+      touchStart(){
+        console.log('touch!!!!!')
       }
     },
   }
