@@ -56,9 +56,8 @@
     data() {
       return {
         timeSegments: [
-          {id: uuidv4(), time: 4, type: 'start'},
-          {id: uuidv4(), time: 40, type: 'set', name: 'Pull Ups'},
-          {id: uuidv4(), time: 20, type: 'set', name: 'Rest'},
+          {id: uuidv4(), time: 10, type: 'set', name: 'Pull Ups'},
+          {id: uuidv4(), time: 10, type: 'set', name: 'Rest'},
         ],
         showTimeLeft: false,
         timeLeft: 0,
@@ -78,6 +77,7 @@
         if (this.interval != null) {
           return;
         }
+        //this.timeSegments.unshift({id: uuidv4(), time: 4, type: 'start'})
         let index = 0;
         this.showTimeLeft = true;
         this.timeLeft = this.timeSegments[index].time;
@@ -121,7 +121,7 @@
                 }else if(this.timeSegments[index+1]){
                   this.nextSegmentName = this.timeSegments[index+1].name;
                 }
-
+            //    this.deleteFirstItem()
                 this.playStartTone();
               }
             }
@@ -183,6 +183,9 @@
       },
       deleteFromList(segment) {
         this.timeSegments.splice(this.timeSegments.indexOf(segment), 1);
+      },
+      deleteFirstItem(){
+        this.timeSegments.splice(0,1);
       },
       toggleRepeat() {
         this.repeat = !this.repeat;
