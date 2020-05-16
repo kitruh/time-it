@@ -1,5 +1,5 @@
 <template>
-  <div class="time-wrapper" @touchstart="this.touchStart">
+  <div class="time-wrapper">
     <h1>Timer</h1>
     <button @click="addSegment">Add Segment</button>
 
@@ -15,10 +15,26 @@
     <input v-model="workoutName"/>
 
     <div v-for="(segment, index) in timeSegments" :key="segment.id">
-      {{segment.name}} {{ segment.time }} seconds
+
+            <span v-if="segment.editOn">
+                    <label>Time</label>
+                <input v-model="segment.time">
+                <label>Type</label>
+                <select v-model="segment.type">
+                  <option disabled value="">Please select one</option>
+                  <option>Workout</option>
+                  <option>Rest</option>
+                </select>
+                <label>Name</label>
+                <input v-model="segment.name"/>
+            </span>
+      <span v-else>{{segment.name}} {{ segment.time }} seconds</span>
+
       <button @click="moveUp(segment)" :disabled="isFirstItem(index)">up</button>
       <button @click="moveDown(segment)" :disabled="isLastItem(index)">down</button>
       <button @click="deleteFromList(segment)">delete</button>
+      <button @click="duplicate(segment)">duplicate</button>
+      <button @click="toggleEdit(segment)"><span v-if="segment.editOn">Stop</span> Edit</button>
     </div>
 
     <button @click="this.start">start</button>
@@ -33,6 +49,9 @@
       <div>{{timeLeft}}</div>
       <div>{{currentSegmentName}}</div>
       <div class="up-next">up next {{nextSegmentName}}</div>
+    </div>
+    <div>
+      {{secondsToTime.h}}:{{secondsToTime.m}}:{{secondsToTime.s}}
     </div>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -56,8 +75,8 @@
     data() {
       return {
         timeSegments: [
-          {id: uuidv4(), time: 10, type: 'set', name: 'Pull Ups'},
-          {id: uuidv4(), time: 10, type: 'set', name: 'Rest'},
+          {id: uuidv4(), time: 10, type: 'set', name: 'Pull Ups', editOn: false},
+          {id: uuidv4(), time: 10, type: 'set', name: 'Rest', editOn: false},
         ],
         showTimeLeft: false,
         timeLeft: 0,
@@ -69,11 +88,13 @@
         workoutName: '',
         pause: false,
         currentSegmentName: '',
-        nextSegmentName: ''
+        nextSegmentName: '',
+        totalTime: 0
       };
     },
     methods: {
       async start() {
+        this.totalTime = 0;
         if (this.interval != null) {
           return;
         }
@@ -84,12 +105,13 @@
         this.countDownType = this.timeSegments[index].type;
         this.currentSegmentName = this.timeSegments[index].name;
 
-        if(this.timeSegments[index+1]){
-          this.nextSegmentName = this.timeSegments[index+1].name;
+        if (this.timeSegments[index + 1]) {
+          this.nextSegmentName = this.timeSegments[index + 1].name;
         }
 
         this.interval = setInterval(() => {
           if (!this.pause) {
+            this.totalTime += 1
             if (this.timeLeft > 1) {
               this.timeLeft -= 1;
               if (this.timeLeft <= 3) {
@@ -104,8 +126,8 @@
                   this.timeLeft = this.timeSegments[index].time;
                   this.countDownType = this.timeSegments[index].type;
                   this.currentSegmentName = this.timeSegments[index].name;
-                  if(this.timeSegments[index+1]){
-                    this.nextSegmentName = this.timeSegments[index+1].name;
+                  if (this.timeSegments[index + 1]) {
+                    this.nextSegmentName = this.timeSegments[index + 1].name;
                   }
 
                 }
@@ -116,12 +138,12 @@
                 this.countDownType = this.timeSegments[index].type;
                 this.currentSegmentName = this.timeSegments[index].name;
 
-                if(index === this.timeSegments.length - 1){
+                if (index === this.timeSegments.length - 1) {
                   this.nextSegmentName = this.timeSegments[0].name;
-                }else if(this.timeSegments[index+1]){
-                  this.nextSegmentName = this.timeSegments[index+1].name;
+                } else if (this.timeSegments[index + 1]) {
+                  this.nextSegmentName = this.timeSegments[index + 1].name;
                 }
-            //    this.deleteFirstItem()
+                //    this.deleteFirstItem()
                 this.playStartTone();
               }
             }
@@ -184,8 +206,8 @@
       deleteFromList(segment) {
         this.timeSegments.splice(this.timeSegments.indexOf(segment), 1);
       },
-      deleteFirstItem(){
-        this.timeSegments.splice(0,1);
+      deleteFirstItem() {
+        this.timeSegments.splice(0, 1);
       },
       toggleRepeat() {
         this.repeat = !this.repeat;
@@ -199,10 +221,40 @@
       isFirstItem(index) {
         return index === 0;
       },
-      touchStart() {
-        console.log('touch!!!!!');
+      toggleEdit(segment) {
+        segment.editOn = !segment.editOn;
       },
+      duplicate(segment){
+        this.timeSegments.splice(this.timeSegments.indexOf(segment) + 1, 0, {...segment});
+      },
+
     },
+    computed: {
+      secondsToTime() {
+        let hours = Math.floor(this.totalTime / (60 * 60));
+
+        const divisor_for_minutes = this.totalTime % (60 * 60);
+        let minutes = Math.floor(divisor_for_minutes / 60);
+
+        const divisor_for_seconds = divisor_for_minutes % 60;
+        let seconds = Math.ceil(divisor_for_seconds);
+
+        if(seconds < 10){
+          seconds = "0" +seconds
+        }
+        if(hours < 10){
+          hours = "0" +hours
+        }
+        if(minutes < 10){
+          minutes = "0" +minutes
+        }
+        return {
+          'h': hours,
+          'm': minutes,
+          's': seconds,
+        };
+      },
+    }
   };
 </script>
 <style lang="scss">
@@ -221,11 +273,11 @@
     display: flex;
     align-items: center;
     font-size: 10em;
-    flex-direction:column;
+    flex-direction: column;
     justify-content: center;
   }
 
-  .up-next{
-    font-size:.5em;
+  .up-next {
+    font-size: .5em;
   }
 </style>
