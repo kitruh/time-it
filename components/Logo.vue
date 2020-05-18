@@ -117,7 +117,7 @@
       };
     },
     methods: {
-      async start() {
+      start() {
         this.totalTime = 0;
         if (this.interval != null) {
           return;
