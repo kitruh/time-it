@@ -118,6 +118,11 @@
     },
     methods: {
       start() {
+        this.countDownAudio.volume=0
+        this.countDownAudio.play()
+        this.startAudio.volume=0
+        this.startAudio.play()
+
         this.totalTime = 0;
         if (this.interval != null) {
           return;
@@ -175,11 +180,13 @@
 
       },
       playCountDownTone() {
+        this.countDownAudio.volume=1
         this.countDownAudio.pause()
         this.countDownAudio.currentTime = 0
         this.countDownAudio.play()
       },
       playStartTone() {
+        this.startAudio.volume=1
         this.startAudio.play()
       },
       stopInterval() {
@@ -247,7 +254,7 @@
         this.editWorkoutName = !this.editWorkoutName
       },
       initSound(){
-
+        this.countDownAudio.volume=0
         this.countDownAudio.play()
       }
 
