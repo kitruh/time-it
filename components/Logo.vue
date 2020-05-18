@@ -72,12 +72,7 @@
     </script>
 
     <audio id="countdown-wav">
-      <source src="/countdown-belltone.wav" type="audio/wav">
-      Your browser does not support the <code>audio</code> element.
-    </audio>
-
-    <audio id="start-wav">
-      <source src="/start-belltone.wav" type="audio/wav">
+      <source src="/countdown-and-start-belltone.wav" type="audio/wav">
       Your browser does not support the <code>audio</code> element.
     </audio>
 
@@ -89,7 +84,6 @@
 
   export default {
     mounted(){
-      this.startAudio = document.getElementById("start-wav");
       this.countDownAudio = document.getElementById("countdown-wav");
     },
     data() {
@@ -113,15 +107,14 @@
         editWorkoutName: false,
         workoutName: '',
         countDownAudio: {},
-        startAudio: {}
-      };
+           };
     },
     methods: {
       start() {
-        this.countDownAudio.muted=true
+
+        this.countDownAudio.currentTime=1
         this.countDownAudio.play()
-        this.startAudio.muted=true
-        this.startAudio.play()
+        this.countDownAudio.pause()
 
         this.totalTime = 0;
         if (this.interval != null) {
@@ -180,14 +173,15 @@
 
       },
       playCountDownTone() {
-        this.countDownAudio.muted=false
         this.countDownAudio.pause()
         this.countDownAudio.currentTime = 0
         this.countDownAudio.play()
       },
       playStartTone() {
-        this.startAudio.muted=false
-        this.startAudio.play()
+        this.countDownAudio.pause()
+        this.countDownAudio.currentTime = 1.5
+        console.log(this.countDownAudio.currentTime)
+        this.countDownAudio.play()
       },
       stopInterval() {
         clearInterval(this.interval);
