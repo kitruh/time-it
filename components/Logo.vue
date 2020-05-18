@@ -118,9 +118,9 @@
     },
     methods: {
       start() {
-        this.countDownAudio.volume=0
+        this.countDownAudio.muted=true
         this.countDownAudio.play()
-        this.startAudio.volume=0
+        this.startAudio.muted=true
         this.startAudio.play()
 
         this.totalTime = 0;
@@ -180,13 +180,13 @@
 
       },
       playCountDownTone() {
-        this.countDownAudio.volume=1
+        this.countDownAudio.muted=false
         this.countDownAudio.pause()
         this.countDownAudio.currentTime = 0
         this.countDownAudio.play()
       },
       playStartTone() {
-        this.startAudio.volume=1
+        this.startAudio.muted=false
         this.startAudio.play()
       },
       stopInterval() {
