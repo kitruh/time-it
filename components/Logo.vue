@@ -2,7 +2,7 @@
   <div class="time-wrapper">
     <h1>Timer</h1>
     <button @click="addSegment">Add Segment</button>
-
+    <button @click="countDownAudio.play()">playsound</button>
     <label>Time</label>
     <div>
       WORKOUT NAME: <span v-if="editWorkoutName"><input v-model="workoutName"></span>
