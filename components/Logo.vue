@@ -4,6 +4,11 @@
     <button @click="addSegment">Add Segment</button>
 
     <label>Time</label>
+    <div>
+      WORKOUT NAME: <span v-if="editWorkoutName"><input v-model="workoutName"></span>
+      <span v-else> {{workoutName}}</span>
+      <button @click="toggleEditWorkoutName"> Edit workout name</button>
+    </div>
     <input v-model="timeToAdd">
     <label>Type</label>
     <select v-model="typeToAdd">
@@ -12,7 +17,7 @@
       <option>Rest</option>
     </select>
     <label>Name</label>
-    <input v-model="workoutName"/>
+    <input v-model="intervalName"/>
 
     <div v-for="(segment, index) in timeSegments" :key="segment.id">
 
@@ -65,6 +70,17 @@
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+
+    <audio id="countdown-wav">
+      <source src="/countdown-belltone.wav" type="audio/wav">
+      Your browser does not support the <code>audio</code> element.
+    </audio>
+
+    <audio id="start-wav">
+      <source src="/start-belltone.wav" type="audio/wav">
+      Your browser does not support the <code>audio</code> element.
+    </audio>
+
   </div>
 </template>
 <script>
@@ -72,6 +88,10 @@
   import Tone from 'tone';
 
   export default {
+    mounted(){
+      this.startAudio = document.getElementById("start-wav");
+      this.countDownAudio = document.getElementById("countdown-wav");
+    },
     data() {
       return {
         timeSegments: [
@@ -85,11 +105,15 @@
         timeToAdd: 0,
         typeToAdd: '',
         repeat: true,
-        workoutName: '',
+        intervalName: '',
         pause: false,
         currentSegmentName: '',
         nextSegmentName: '',
-        totalTime: 0
+        totalTime: 0,
+        editWorkoutName: false,
+        workoutName: '',
+        countDownAudio: {},
+        startAudio: {}
       };
     },
     methods: {
@@ -98,7 +122,6 @@
         if (this.interval != null) {
           return;
         }
-        //this.timeSegments.unshift({id: uuidv4(), time: 4, type: 'start'})
         let index = 0;
         this.showTimeLeft = true;
         this.timeLeft = this.timeSegments[index].time;
@@ -152,29 +175,19 @@
 
       },
       playCountDownTone() {
-        const synth = new Tone.PolySynth(6, Tone.Synth, {
-          oscillator: {
-            type: 'sine',
-          },
-        }).toMaster();
-        synth.triggerAttackRelease(['C4'], '16n');
-        synth.triggerAttackRelease(['E4'], '16n', '+16n');
-        synth.triggerAttackRelease(['G4'], '16n', '+8n');
+        this.countDownAudio.pause()
+        this.countDownAudio.currentTime = 0
+        this.countDownAudio.play()
       },
       playStartTone() {
-        const synth = new Tone.PolySynth(6, Tone.Synth, {
-          oscillator: {
-            type: 'sine',
-          },
-        }).toMaster();
-        synth.triggerAttackRelease(['C6'], '16n');
+        this.startAudio.play()
       },
       stopInterval() {
         clearInterval(this.interval);
         this.interval = null;
       },
       addSegment() {
-        this.timeSegments.push({time: this.timeToAdd, type: this.typeToAdd, id: uuidv4(), name: this.workoutName});
+        this.timeSegments.push({time: this.timeToAdd, type: this.typeToAdd, id: uuidv4(), name: this.intervalName});
       },
       moveUp(segment) {
         const currentIndex = this.timeSegments.indexOf(segment);
@@ -227,6 +240,12 @@
       duplicate(segment){
         this.timeSegments.splice(this.timeSegments.indexOf(segment) + 1, 0, {...segment});
       },
+      saveWorkout(){
+
+      },
+      toggleEditWorkoutName(){
+        this.editWorkoutName = !this.editWorkoutName
+      }
 
     },
     computed: {
