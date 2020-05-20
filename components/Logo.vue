@@ -8,6 +8,7 @@
       WORKOUT NAME: <span v-if="editWorkoutName"><input v-model="workoutName"></span>
       <span v-else> {{workoutName}}</span>
       <button @click="toggleEditWorkoutName"> Edit workout name</button>
+      <button @click="saveWorkout" >Save workout</button>
     </div>
     <input v-model="timeToAdd">
     <label>Type</label>
@@ -85,6 +86,22 @@
   export default {
     mounted(){
       this.countDownAudio = document.getElementById("countdown-wav");
+      this.currentWorkoutId = uuidv4();
+      let savedWorkouts
+      try{
+         savedWorkouts =JSON.parse(localStorage.getItem('workouts'));
+      }catch{
+        localStorage.clear()
+      }
+
+      if(savedWorkouts){this.workouts = savedWorkouts}
+
+      if(this.workouts.length > 0){
+        console.log(this.workouts[0])
+        this.timeSegments = this.workouts[0].timeSegments
+      }
+      console.log(this.workouts)
+
     },
     data() {
       return {
@@ -107,6 +124,8 @@
         editWorkoutName: false,
         workoutName: '',
         countDownAudio: {},
+        workouts: [],
+        currentWorkoutId: ''
            };
     },
     methods: {
@@ -180,15 +199,22 @@
       playStartTone() {
         this.countDownAudio.pause()
         this.countDownAudio.currentTime = 1.5
-        console.log(this.countDownAudio.currentTime)
         this.countDownAudio.play()
       },
       stopInterval() {
         clearInterval(this.interval);
         this.interval = null;
       },
-      addSegment() {
-        this.timeSegments.push({time: this.timeToAdd, type: this.typeToAdd, id: uuidv4(), name: this.intervalName});
+      addSegment () {
+        this.timeSegments.push(
+          {
+            time: this.timeToAdd,
+            type: this.typeToAdd,
+            id: uuidv4(),
+            name: this.intervalName,
+            editOn: false
+          }
+        )
       },
       moveUp(segment) {
         const currentIndex = this.timeSegments.indexOf(segment);
@@ -243,6 +269,15 @@
       },
       saveWorkout(){
 
+        const workout = {
+          timeSegments : this.timeSegments,
+          name: this.workoutName,
+          id: uuidv4()
+        }
+        this.workouts.push(workout);
+
+        //this.workouts.findIndex( workout => workout.id === this.currentWorkoutId)
+        localStorage.setItem('workouts', JSON.stringify(this.workouts));
       },
       toggleEditWorkoutName(){
         this.editWorkoutName = !this.editWorkoutName
