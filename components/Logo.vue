@@ -1,15 +1,24 @@
 <template>
   <div class="time-wrapper">
     <h1>Timer</h1>
-    <button @click="addSegment">Add Segment</button>
-    <button @click="initSound">playsound</button>
-    <label>Time</label>
+
     <div>
       WORKOUT NAME: <span v-if="editWorkoutName"><input v-model="workoutName"></span>
       <span v-else> {{workoutName}}</span>
+      <button @click="initializeNewWorkout">New Workout</button>
       <button @click="toggleEditWorkoutName"> Edit workout name</button>
       <button @click="saveWorkout" >Save workout</button>
     </div>
+    <div>
+    <h5>Saved Workouts:</h5>
+      <div v-for="workout in workouts" @click="setWorkout(workout)">
+        {{workout.name}}
+      </div>
+    </div>
+
+    <button @click="addSegment">Add Segment</button>
+    <button @click="initSound">playsound</button>
+    <label>Time</label>
     <input v-model="timeToAdd">
     <label>Type</label>
     <select v-model="typeToAdd">
@@ -97,8 +106,9 @@
       if(savedWorkouts){this.workouts = savedWorkouts}
 
       if(this.workouts.length > 0){
-        console.log(this.workouts[0])
-        this.timeSegments = this.workouts[0].timeSegments
+        const firstWorkout = this.workouts[0]
+        this.currentWorkoutId = firstWorkout.id
+        this.timeSegments = firstWorkout.timeSegments
       }
       console.log(this.workouts)
 
@@ -268,15 +278,25 @@
         this.timeSegments.splice(this.timeSegments.indexOf(segment) + 1, 0, {...segment});
       },
       saveWorkout(){
+        console.log('this.currentWorkoutId', this.currentWorkoutId)
 
-        const workout = {
+        const existingWorkout = this.workouts.findIndex( workout => {
+          console.log('workoutId in set', workout.id);
+          return workout.id === this.currentWorkoutId
+        })
+
+       const workoutToSave = {
           timeSegments : this.timeSegments,
           name: this.workoutName,
-          id: uuidv4()
+          id: this.currentWorkoutId
         }
-        this.workouts.push(workout);
 
-        //this.workouts.findIndex( workout => workout.id === this.currentWorkoutId)
+      if(existingWorkout >= 0){
+        this.workouts.splice(existingWorkout, 1, workoutToSave)
+      }else{
+        this.workouts.push(workoutToSave);
+      }
+
         localStorage.setItem('workouts', JSON.stringify(this.workouts));
       },
       toggleEditWorkoutName(){
@@ -285,6 +305,17 @@
       initSound(){
         this.countDownAudio.volume=0
         this.countDownAudio.play()
+      },
+      setWorkout(workout){
+        this.currentWorkoutId = workout.id
+        this.workoutName = workout.name;
+        this.timeSegments = workout.timeSegments
+      },
+      initializeNewWorkout(){
+        this.currentWorkoutId= uuidv4();
+        this.workoutName = '';
+        this.timeSegments = [];
+
       }
 
     },
