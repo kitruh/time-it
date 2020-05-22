@@ -12,7 +12,8 @@ export default {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {rel:"stylesheet", href:"//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons"}
     ],
     script: [
       {"data-ad-client":"ca-pub-5363460947226243",
@@ -43,6 +44,17 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
+    ['nuxt-vue-material', {
+      theme: 'default',
+      components: ['MdDrawer',
+        'MdRadio',
+        'MdMenu',
+        'MdContent',
+        'MdList',
+        'MdButton',
+        'MdToolbar',
+      'MdSnackbar']
+    }],
   ],
   /*
   ** Build configuration

@@ -7,13 +7,16 @@
       <span v-else> {{workoutName}}</span>
       <button @click="initializeNewWorkout">New Workout</button>
       <button @click="toggleEditWorkoutName"> Edit workout name</button>
-      <button @click="saveWorkout" >Save workout</button>
+      <md-button type="submit" class="md-primary md-raised" @click="saveWorkout" :disabled="saveWorkoutButtonDisabled">Save Workout</md-button>
+
+      <button @click="clearAllSavedWorkouts">Clear All Saved Workouts</button>
     </div>
     <div>
     <h5>Saved Workouts:</h5>
       <div v-for="workout in workouts" @click="setWorkout(workout)">
         {{workout.name}}
       </div>
+
     </div>
 
     <button @click="addSegment">Add Segment</button>
@@ -86,19 +89,25 @@
       Your browser does not support the <code>audio</code> element.
     </audio>
 
+    <md-button type="submit" class="md-primary md-raised" @click="showSnackbar">Open Snackbar</md-button>
+    <md-snackbar :md-position="snackbar.position" :md-duration="snackbar.isInfinity ? Infinity : snackbar.duration" :md-active.sync="snackbar.showSnackbar" md-persistent>
+      <span>{{snackbar.message}}</span>
+      <md-button class="md-primary" @click="snackbar.showSnackbar = false">Close</md-button>
+    </md-snackbar>
+
   </div>
 </template>
 <script>
   import {v4 as uuidv4} from 'uuid';
-  import Tone from 'tone';
-
+  import 'vue-material/dist/vue-material.min.css'
+  import 'vue-material/dist/theme/default.css'
   export default {
     mounted(){
       this.countDownAudio = document.getElementById("countdown-wav");
       this.currentWorkoutId = uuidv4();
       let savedWorkouts
       try{
-         savedWorkouts =JSON.parse(localStorage.getItem('workouts'));
+         savedWorkouts = JSON.parse(localStorage.getItem('workouts'));
       }catch{
         localStorage.clear()
       }
@@ -109,9 +118,9 @@
         const firstWorkout = this.workouts[0]
         this.currentWorkoutId = firstWorkout.id
         this.timeSegments = firstWorkout.timeSegments
+      }else{
+        this.initializeNewWorkout()
       }
-      console.log(this.workouts)
-
     },
     data() {
       return {
@@ -135,7 +144,14 @@
         workoutName: '',
         countDownAudio: {},
         workouts: [],
-        currentWorkoutId: ''
+        currentWorkoutId: '',
+        snackbar: {
+          showSnackbar: false,
+          position: 'center',
+          duration: 4000,
+          isInfinity: false,
+          message: ''
+        }
            };
     },
     methods: {
@@ -278,10 +294,7 @@
         this.timeSegments.splice(this.timeSegments.indexOf(segment) + 1, 0, {...segment});
       },
       saveWorkout(){
-        console.log('this.currentWorkoutId', this.currentWorkoutId)
-
         const existingWorkout = this.workouts.findIndex( workout => {
-          console.log('workoutId in set', workout.id);
           return workout.id === this.currentWorkoutId
         })
 
@@ -298,6 +311,10 @@
       }
 
         localStorage.setItem('workouts', JSON.stringify(this.workouts));
+
+        this.snackbar.message = "Workout Successfully Saved"
+        this.snackbar.showSnackbar = true
+
       },
       toggleEditWorkoutName(){
         this.editWorkoutName = !this.editWorkoutName
@@ -313,9 +330,14 @@
       },
       initializeNewWorkout(){
         this.currentWorkoutId= uuidv4();
-        this.workoutName = '';
+        this.workoutName = `New Workout ${this.workouts.length + 1}`;
         this.timeSegments = [];
-
+      },
+      clearAllSavedWorkouts(){
+        localStorage.removeItem('workouts')
+      },
+      showSnackbar(){
+        this.snackbar.showSnackbar=true
       }
 
     },
@@ -344,6 +366,9 @@
           's': seconds,
         };
       },
+      saveWorkoutButtonDisabled(){
+        return this.workoutName === ""
+      }
     }
   };
 </script>
