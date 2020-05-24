@@ -1,63 +1,15 @@
 <template>
   <div class="page-container">
-    <md-app md-waterfall md-mode="flexible">
-      <md-app-toolbar class="md-large md-primary">
-        <div class="md-toolbar-row">
-          <div class="md-toolbar-section-start">
-            <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
-              <md-icon>menu</md-icon>
-            </md-button>
-          </div>
-
-          <div class="md-toolbar-section-end">
-            <md-button class="md-icon-button">
-              <md-icon>more_vert</md-icon>
-            </md-button>
-          </div>
-        </div>
-
-        <div class="md-toolbar-row md-toolbar-offset">
-          <span class="md-display-1">My Title</span>
-        </div>
-      </md-app-toolbar>
-
-      <md-app-drawer :md-active.sync="menuVisible">
-        <md-toolbar class="md-transparent" md-elevation="0">Navigation</md-toolbar>
-
-        <md-list>
-          <md-list-item>
-            <md-icon>move_to_inbox</md-icon>
-            <span class="md-list-item-text">Inbox</span>
-          </md-list-item>
-
-          <md-list-item>
-            <md-icon>send</md-icon>
-            <span class="md-list-item-text">Sent Mail</span>
-          </md-list-item>
-
-          <md-list-item>
-            <md-icon>delete</md-icon>
-            <span class="md-list-item-text">Trash</span>
-          </md-list-item>
-
-          <md-list-item>
-            <md-icon>error</md-icon>
-            <span class="md-list-item-text">Spam</span>
-          </md-list-item>
-        </md-list>
-      </md-app-drawer>
-
-      <md-app-content>
     <h1>Timer</h1>
 
     <div>
       WORKOUT NAME: <span v-if="editWorkoutName"><input v-model="workoutName"></span>
       <span v-else> {{workoutName}}</span>
-      <button @click="initializeNewWorkout">New Workout</button>
-      <button @click="toggleEditWorkoutName"> Edit workout name</button>
-      <md-button type="submit" class="md-primary md-raised" @click="saveWorkout" :disabled="saveWorkoutButtonDisabled">Save Workout</md-button>
+      <md-button class="md-primary md-raised" @click="initializeNewWorkout">New Workout</md-button>
+      <md-button class="md-primary md-raised" @click="toggleEditWorkoutName"> Edit workout name</md-button>
+      <md-button class="md-primary md-raised" @click="saveWorkout" :disabled="saveWorkoutButtonDisabled">Save Workout</md-button>
 
-      <button @click="clearAllSavedWorkouts">Clear All Saved Workouts</button>
+      <md-button class="md-primary md-raised" @click="clearAllSavedWorkouts">Clear All Saved Workouts</md-button>
     </div>
     <div>
     <h5>Saved Workouts:</h5>
@@ -67,8 +19,8 @@
 
     </div>
 
-    <button @click="addSegment">Add Segment</button>
-    <button @click="initSound">playsound</button>
+    <md-button class="md-primary md-raised" @click="addSegment">Add Segment</md-button>
+    <md-button class="md-primary md-raised" @click="initSound">playsound</md-button>
     <label>Time</label>
     <input v-model="timeToAdd">
     <label>Type</label>
@@ -96,21 +48,21 @@
             </span>
       <span v-else>{{segment.name}} {{ segment.time }} seconds</span>
 
-      <button @click="moveUp(segment)" :disabled="isFirstItem(index)">up</button>
-      <button @click="moveDown(segment)" :disabled="isLastItem(index)">down</button>
-      <button @click="deleteFromList(segment)">delete</button>
-      <button @click="duplicate(segment)">duplicate</button>
-      <button @click="toggleEdit(segment)"><span v-if="segment.editOn">Stop</span> Edit</button>
+      <md-button class="md-primary md-raised" @click="moveUp(segment)" :disabled="isFirstItem(index)">up</md-button>
+      <md-button class="md-primary md-raised" @click="moveDown(segment)" :disabled="isLastItem(index)">down</md-button>
+      <md-button class="md-primary md-raised" @click="deleteFromList(segment)">delete</md-button>
+      <md-button class="md-primary md-raised" @click="duplicate(segment)">duplicate</md-button>
+      <md-button class="md-primary md-raised" @click="toggleEdit(segment)"><span v-if="segment.editOn">Stop</span> Edit</md-button>
     </div>
 
-    <button @click="this.start">start</button>
-    <button @click="this.stopInterval">Stop</button>
-    <button @click="this.toggleRepeat">Toggle Repeat</button>
+    <md-button class="md-primary md-raised" @click="this.start">start</md-button>
+    <md-button class="md-primary md-raised" @click="this.stopInterval">Stop</md-button>
+    <md-button class="md-primary md-raised" @click="this.toggleRepeat">Toggle Repeat</md-button>
     {{repeat}}
-    <button @click="this.togglePause">
+    <md-button class="md-primary md-raised" @click="this.togglePause">
       <span v-if="this.pause">Unpause</span>
       <span v-else>Pause</span>
-    </button>
+    </md-button>
     <div class="time-section">
       <div>{{timeLeft}}</div>
       <div>{{currentSegmentName}}</div>
@@ -142,12 +94,8 @@
       <md-button class="md-primary" @click="snackbar.showSnackbar = false">Close</md-button>
     </md-snackbar>
 
-
-      </md-app-content>
-
-    </md-app>
     <md-bottom-bar md-type="shift">
-      <md-bottom-bar-item id="bottom-bar-item-home" md-label="Home" md-icon="home"></md-bottom-bar-item>
+      <md-bottom-bar-item id="bottom-bar-item-home" md-label="Workout" md-icon="directions_run"></md-bottom-bar-item>
       <md-bottom-bar-item id="bottom-bar-item-pages" md-label="Pages" md-icon="pages"></md-bottom-bar-item>
       <md-bottom-bar-item id="bottom-bar-item-posts" md-label="Posts" md-icon="/assets/icon-whatshot.svg"></md-bottom-bar-item>
       <md-bottom-bar-item id="bottom-bar-item-favorites" md-label="Favorites" md-icon="favorite"></md-bottom-bar-item>
