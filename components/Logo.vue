@@ -64,8 +64,12 @@
       <span v-else>Pause</span>
     </md-button>
     <div class="time-section">
+
+      <md-progress-spinner md-mode="determinate" :md-value="currentPercentage"></md-progress-spinner>
+
       <div>{{timeLeft}}</div>
       <div>{{currentSegmentName}}</div>
+      <div>current percentage {{currentPercentage}}</div>
       <div class="up-next">up next {{nextSegmentName}}</div>
     </div>
     <div>
@@ -80,9 +84,9 @@
          data-ad-slot="7703035200"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+<!--    <script>-->
+<!--      (adsbygoogle = window.adsbygoogle || []).push({});-->
+<!--    </script>-->
 
     <audio id="countdown-wav">
       <source src="/countdown-and-start-belltone.wav" type="audio/wav">
@@ -142,6 +146,7 @@
         repeat: true,
         intervalName: '',
         pause: false,
+        amount:50,
         currentSegmentName: '',
         nextSegmentName: '',
         totalTime: 0,
@@ -158,7 +163,8 @@
           message: ''
         },
         menuVisible: false,
-        theme: 'teal'
+        theme: 'teal',
+        currentSegmentTotalTime: 0,
            };
     },
     methods: {
@@ -177,6 +183,7 @@
         this.timeLeft = this.timeSegments[index].time;
         this.countDownType = this.timeSegments[index].type;
         this.currentSegmentName = this.timeSegments[index].name;
+        this.currentSegmentTotalTime = Number(this.timeSegments[index].time + "")
 
         if (this.timeSegments[index + 1]) {
           this.nextSegmentName = this.timeSegments[index + 1].name;
@@ -199,6 +206,8 @@
                   this.timeLeft = this.timeSegments[index].time;
                   this.countDownType = this.timeSegments[index].type;
                   this.currentSegmentName = this.timeSegments[index].name;
+                  this.currentSegmentTotalTime = this.timeSegments[index].time
+
                   if (this.timeSegments[index + 1]) {
                     this.nextSegmentName = this.timeSegments[index + 1].name;
                   }
@@ -210,6 +219,7 @@
                 this.timeLeft = this.timeSegments[index].time;
                 this.countDownType = this.timeSegments[index].type;
                 this.currentSegmentName = this.timeSegments[index].name;
+                this.currentSegmentTotalTime = this.timeSegments[index].time
 
                 if (index === this.timeSegments.length - 1) {
                   this.nextSegmentName = this.timeSegments[0].name;
@@ -375,6 +385,9 @@
       },
       saveWorkoutButtonDisabled(){
         return this.workoutName === ""
+      },
+      currentPercentage(){
+       return 100 -(this.timeLeft/this.currentSegmentTotalTime) * 100
       }
     }
   };
@@ -408,7 +421,6 @@
     height: 50vh;
     display: flex;
     align-items: center;
-    font-size: 10em;
     flex-direction: column;
     justify-content: center;
   }
