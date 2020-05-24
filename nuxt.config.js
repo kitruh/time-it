@@ -44,17 +44,21 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
-    ['nuxt-vue-material', {
-      theme: 'default',
-      components: ['MdDrawer',
-        'MdRadio',
-        'MdMenu',
-        'MdContent',
-        'MdList',
-        'MdButton',
-        'MdToolbar',
-      'MdSnackbar']
-    }],
+    // ['nuxt-vue-material', {
+    //   theme: 'default',
+    //   components: ['MdDrawer',
+    //     'MdRadio',
+    //     'MdMenu',
+    //     'MdContent',
+    //     'MdList',
+    //     'MdButton',
+    //     'MdToolbar',
+    //     'MdIcon',
+    //     'MdApp',
+    //     'MdBottomBarItem',
+    //   'MdSnackbar']
+    // }],
+    'nuxt-vue-material'
   ],
   /*
   ** Build configuration
