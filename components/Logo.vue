@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+     <div v-if="editPageActive">
     <h1>Timer</h1>
 
     <div>
@@ -54,26 +55,31 @@
       <md-button class="md-primary md-raised" @click="duplicate(segment)">duplicate</md-button>
       <md-button class="md-primary md-raised" @click="toggleEdit(segment)"><span v-if="segment.editOn">Stop</span> Edit</md-button>
     </div>
+       <md-button class="md-primary md-raised" @click="this.toggleRepeat">Toggle Repeat</md-button>
+  </div>
+    <div v-if="workoutPageActive" class="workoutPage time-it-page">
 
-    <md-button class="md-primary md-raised" @click="this.start">start</md-button>
-    <md-button class="md-primary md-raised" @click="this.stopInterval">Stop</md-button>
-    <md-button class="md-primary md-raised" @click="this.toggleRepeat">Toggle Repeat</md-button>
-    {{repeat}}
-    <md-button class="md-primary md-raised" @click="this.togglePause">
-      <span v-if="this.pause">Unpause</span>
-      <span v-else>Pause</span>
-    </md-button>
-    <div class="time-section">
+      <div class="time-section">
+        <md-progress-spinner md-mode="determinate" :md-diameter="200" :md-stroke="30" :md-value="currentPercentage"></md-progress-spinner>
 
-      <md-progress-spinner md-mode="determinate" :md-value="currentPercentage"></md-progress-spinner>
+        <div class="stats">
+          <div>{{timeLeft}}</div>
+          <div>{{currentSegmentName}}</div>
+          <div class="up-next">up next {{nextSegmentName}}</div>
+          <div>
+            Time Elapsed: {{secondsToTime.h}}:{{secondsToTime.m}}:{{secondsToTime.s}}
+          </div>
+        </div>
 
-      <div>{{timeLeft}}</div>
-      <div>{{currentSegmentName}}</div>
-      <div>current percentage {{currentPercentage}}</div>
-      <div class="up-next">up next {{nextSegmentName}}</div>
-    </div>
-    <div>
-      {{secondsToTime.h}}:{{secondsToTime.m}}:{{secondsToTime.s}}
+        <md-button class="md-icon-button" @click="this.start"><md-icon>play_arrow</md-icon></md-button>
+        <md-button class="md-icon-button" @click="this.stopInterval"><md-icon>stop</md-icon></md-button>
+        <md-button class="md-icon-button" @click="this.togglePause">
+          <md-icon v-if="this.pause">play_arrow</md-icon>
+          <md-icon v-else>pause</md-icon>
+        </md-button>
+
+      </div>
+
     </div>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -97,13 +103,13 @@
       <span>{{snackbar.message}}</span>
       <md-button class="md-primary" @click="snackbar.showSnackbar = false">Close</md-button>
     </md-snackbar>
+    <div class="bottom-bar-wrapper">
+      <md-bottom-bar md-type="shift">
+        <md-bottom-bar-item @click="showWorkoutPage" id="bottom-bar-item-home" md-label="Workout" md-icon="directions_run"></md-bottom-bar-item>
+        <md-bottom-bar-item @click="showEditPage" id="bottom-bar-item-pages" md-label="Edit" md-icon="edit"></md-bottom-bar-item>
+      </md-bottom-bar>
+    </div>
 
-    <md-bottom-bar md-type="shift">
-      <md-bottom-bar-item id="bottom-bar-item-home" md-label="Workout" md-icon="directions_run"></md-bottom-bar-item>
-      <md-bottom-bar-item id="bottom-bar-item-pages" md-label="Pages" md-icon="pages"></md-bottom-bar-item>
-      <md-bottom-bar-item id="bottom-bar-item-posts" md-label="Posts" md-icon="/assets/icon-whatshot.svg"></md-bottom-bar-item>
-      <md-bottom-bar-item id="bottom-bar-item-favorites" md-label="Favorites" md-icon="favorite"></md-bottom-bar-item>
-    </md-bottom-bar>
   </div>
 </template>
 <script>
@@ -165,6 +171,8 @@
         menuVisible: false,
         theme: 'teal',
         currentSegmentTotalTime: 0,
+        workoutPageActive: true,
+        editPageActive: false
            };
     },
     methods: {
@@ -355,6 +363,14 @@
       },
       showSnackbar(){
         this.snackbar.showSnackbar=true
+      },
+      showEditPage(){
+        this.editPageActive = true
+        this.workoutPageActive = false
+      },
+      showWorkoutPage(){
+        this.editPageActive = false
+        this.workoutPageActive = true
       }
 
     },
@@ -387,7 +403,7 @@
         return this.workoutName === ""
       },
       currentPercentage(){
-       return 100 -(this.timeLeft/this.currentSegmentTotalTime) * 100
+       return 100 - (this.timeLeft/this.currentSegmentTotalTime) * 100
       }
     }
   };
@@ -415,17 +431,32 @@
   }
 
   .time-section {
-    width: 100%;
-    background-color: #006bd6;
-    color: white;
-    height: 50vh;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
+    width: 100vw;
+    display: grid;
+    grid-template-rows: 1fr 56px;
+  }
+
+  .workoutPage{
+    display:grid;
   }
 
   .up-next {
     font-size: .5em;
   }
+
+  .bottom-bar-wrapper{
+    width:100%;
+  }
+
+  .page-container{
+    height:100vh;
+    display:grid;
+    grid-template-rows: 1fr 56px;
+  }
+
+  .md-progress-spinner{
+    align-self: center;
+    justify-self: center;
+  }
+
 </style>
