@@ -118,6 +118,7 @@
   import 'vue-material/dist/theme/default.css'
   export default {
     mounted(){
+      window.scrollTo(0,1);
       this.countDownAudio = document.getElementById("countdown-wav");
       this.currentWorkoutId = uuidv4();
       let savedWorkouts
