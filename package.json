@@ -18,7 +18,8 @@
     "nuxt-vue-material": "^1.2.0",
     "sass-loader": "^8.0.2",
     "tone": "^13.8.25",
-    "uuid": "^8.0.0"
+    "uuid": "^8.0.0",
+    "vue-div-100vh": "^0.1.2"
   },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.27",

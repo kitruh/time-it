@@ -9160,6 +9160,13 @@ vue-client-only@^2.0.0:
   resolved "https://registry.yarnpkg.com/vue-client-only/-/vue-client-only-2.0.0.tgz#ddad8d675ee02c761a14229f0e440e219de1da1c"
   integrity sha512-arhk1wtWAfLsJyxGMoEYhoBowM87/i6HLSG2LH/03Yog6i2d9JEN1peMP0Ceis+/n9DxdenGYZZTxbPPJyHciA==
 
+vue-div-100vh@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/vue-div-100vh/-/vue-div-100vh-0.1.2.tgz#95804f4d9f397ae013eb1631b1705bfc3ab77d0d"
+  integrity sha512-p3XUqyjc4Mpep5hwSGtkXbDCKcAt6oShKGMeuZmaS+yDFK2w+HsR5WssuY1WtMUbNKl5WI/ohJeDXG+3XKN5DA==
+  dependencies:
+    vue "^2.6.6"
+
 vue-github-buttons@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/vue-github-buttons/-/vue-github-buttons-3.1.0.tgz#eaea2ba0b7e0df5a7fd1c61ba37dabf7553dd79a"
@@ -9264,7 +9271,7 @@ vue-toc@0.0.1:
   dependencies:
     vue "^2.6.10"
 
-vue@^2.6.10, vue@^2.6.11:
+vue@^2.6.10, vue@^2.6.11, vue@^2.6.6:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==

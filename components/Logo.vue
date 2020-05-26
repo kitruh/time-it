@@ -1,5 +1,8 @@
 <template>
+  <no-ssr>
+  <Vue100vh>
   <div class="page-container">
+
      <div v-if="editPageActive">
     <h1>Timer</h1>
 
@@ -70,13 +73,15 @@
             Time Elapsed: {{secondsToTime.h}}:{{secondsToTime.m}}:{{secondsToTime.s}}
           </div>
         </div>
+        <div class="play-pause-wrapper" >
+          <md-button class="md-icon-button play-pause-item" @click="this.start"><md-icon>play_arrow</md-icon></md-button>
+          <md-button class="md-icon-button play-pause-item" @click="this.stopInterval"><md-icon>stop</md-icon></md-button>
+          <md-button class="md-icon-button play-pause-item" @click="this.togglePause">
+            <md-icon v-if="this.pause">play_arrow</md-icon>
+            <md-icon v-else>pause</md-icon>
+          </md-button>
+        </div>
 
-        <md-button class="md-icon-button" @click="this.start"><md-icon>play_arrow</md-icon></md-button>
-        <md-button class="md-icon-button" @click="this.stopInterval"><md-icon>stop</md-icon></md-button>
-        <md-button class="md-icon-button" @click="this.togglePause">
-          <md-icon v-if="this.pause">play_arrow</md-icon>
-          <md-icon v-else>pause</md-icon>
-        </md-button>
 
       </div>
 
@@ -111,14 +116,18 @@
     </div>
 
   </div>
+  </Vue100vh>
+  </no-ssr>
 </template>
 <script>
   import {v4 as uuidv4} from 'uuid';
   import 'vue-material/dist/vue-material.min.css'
   import 'vue-material/dist/theme/default.css'
+
+  import Vue100vh from 'vue-div-100vh'
+
   export default {
     mounted(){
-      window.scrollTo(0,1);
       this.countDownAudio = document.getElementById("countdown-wav");
       this.currentWorkoutId = uuidv4();
       let savedWorkouts
@@ -406,12 +415,12 @@
       currentPercentage(){
        return 100 - (this.timeLeft/this.currentSegmentTotalTime) * 100
       }
-    }
+    },
+    components: {Vue100vh}
   };
-</script>
-<style lang="scss">
 
-</style>
+
+</script>
 
 <style lang="scss" scoped>
   .phone-viewport {
@@ -450,8 +459,8 @@
   }
 
   .page-container{
-    height:100vh;
     display:grid;
+    height:100%;
     grid-template-rows: 1fr 56px;
   }
 
@@ -460,4 +469,13 @@
     justify-self: center;
   }
 
+  .play-pause-wrapper{
+    width:100%;
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-content: center;
+  }
+  .play-pause-item{
+    justify-self: center;
+  }
 </style>
