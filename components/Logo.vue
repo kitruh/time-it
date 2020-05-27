@@ -63,14 +63,16 @@
     <div v-if="workoutPageActive" class="workoutPage time-it-page">
 
       <div class="time-section">
-        <md-progress-spinner md-mode="determinate" :md-diameter="200" :md-stroke="30" :md-value="currentPercentage"></md-progress-spinner>
+        <div class="progress-spinner-wrapper">
+          <md-progress-spinner md-mode="determinate" :md-diameter="300" :md-stroke="30" :md-value="currentPercentage"></md-progress-spinner>
+          <div class="percentage-middle-circle">{{timeLeftInIntervalFormatted}}</div>
+        </div>
 
         <div class="stats">
-          <div>{{timeLeft}}</div>
           <div>{{currentSegmentName}}</div>
           <div class="up-next">up next {{nextSegmentName}}</div>
           <div>
-            Time Elapsed: {{secondsToTime.h}}:{{secondsToTime.m}}:{{secondsToTime.s}}
+            Time Elapsed: {{totalTimeFormatted}}
           </div>
         </div>
         <div class="play-pause-wrapper" >
@@ -98,12 +100,6 @@
 <!--    <script>-->
 <!--      (adsbygoogle = window.adsbygoogle || []).push({});-->
 <!--    </script>-->
-
-    <audio id="countdown-wav">
-      <source src="/countdown-and-start-belltone.wav" type="audio/wav">
-      Your browser does not support the <code>audio</code> element.
-    </audio>
-
     <md-snackbar :md-position="snackbar.position" :md-duration="snackbar.isInfinity ? Infinity : snackbar.duration" :md-active.sync="snackbar.showSnackbar" md-persistent>
       <span>{{snackbar.message}}</span>
       <md-button class="md-primary" @click="snackbar.showSnackbar = false">Close</md-button>
@@ -128,7 +124,8 @@
 
   export default {
     mounted(){
-      this.countDownAudio = document.getElementById("countdown-wav");
+      this.countDownAudio = new Audio('countdown-and-start-belltone.wav')
+      // this.countDownAudio = document.getElementById("countdown-wav");
       this.currentWorkoutId = uuidv4();
       let savedWorkouts
       try{
@@ -225,7 +222,7 @@
                   this.countDownType = this.timeSegments[index].type;
                   this.currentSegmentName = this.timeSegments[index].name;
                   this.currentSegmentTotalTime = this.timeSegments[index].time
-
+                  this.playStartTone();
                   if (this.timeSegments[index + 1]) {
                     this.nextSegmentName = this.timeSegments[index + 1].name;
                   }
@@ -245,6 +242,7 @@
                   this.nextSegmentName = this.timeSegments[index + 1].name;
                 }
                 //    this.deleteFirstItem()
+                console.log('play start tone')
                 this.playStartTone();
               }
             }
@@ -263,6 +261,7 @@
         this.countDownAudio.play()
       },
       stopInterval() {
+        this.countDownAudio.pause()
         clearInterval(this.interval);
         this.interval = null;
       },
@@ -381,14 +380,11 @@
       showWorkoutPage(){
         this.editPageActive = false
         this.workoutPageActive = true
-      }
+      },
+      secondsToTime(totalSeconds) {
+        let hours = Math.floor(totalSeconds / (60 * 60));
 
-    },
-    computed: {
-      secondsToTime() {
-        let hours = Math.floor(this.totalTime / (60 * 60));
-
-        const divisor_for_minutes = this.totalTime % (60 * 60);
+        const divisor_for_minutes = totalSeconds % (60 * 60);
         let minutes = Math.floor(divisor_for_minutes / 60);
 
         const divisor_for_seconds = divisor_for_minutes % 60;
@@ -408,6 +404,18 @@
           'm': minutes,
           's': seconds,
         };
+      },
+      formatTime({h,m,s}){
+        return `${h}:${m}:${s}`
+      }
+
+    },
+    computed: {
+      totalTimeFormatted() {
+        return this.formatTime(this.secondsToTime(this.totalTime));
+      },
+      timeLeftInIntervalFormatted(){
+        return this.formatTime(this.secondsToTime(this.timeLeft));
       },
       saveWorkoutButtonDisabled(){
         return this.workoutName === ""
@@ -477,5 +485,24 @@
   }
   .play-pause-item{
     justify-self: center;
+  }
+  .md-progress-spinner{
+    position: absolute;
+    display:flex;
+    align-items: center;
+    height:100%;
+    justify-content: center;
+    width:100%;
+  }
+  .percentage-middle-circle{
+    position: absolute;
+    display:flex;
+     align-items: center;
+    height:100%;
+    justify-content: center;
+    width:100%;
+  }
+  .progress-spinner-wrapper{
+    position:relative;
   }
 </style>
