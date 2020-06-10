@@ -63,17 +63,25 @@
     <div v-if="workoutPageActive" class="workoutPage time-it-page">
 
       <div class="time-section">
+        <div class="current-segment-text">{{currentSegmentName}}</div>
         <div class="progress-spinner-wrapper">
-          <md-progress-spinner md-mode="determinate" :md-diameter="300" :md-stroke="30" :md-value="currentPercentage"></md-progress-spinner>
-          <div class="percentage-middle-circle">{{timeLeftInIntervalFormatted}}</div>
+          <md-progress-spinner md-mode="determinate" :md-diameter="circleWidth" :md-stroke="circleThickness" :md-value="currentPercentage"></md-progress-spinner>
+          <div class="percentage-middle-circle">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div class="current-time">{{timeLeftInIntervalFormatted}} </div>
+            <div class="time-elapsed">Time Elapsed: {{totalTimeFormatted}}</div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
         </div>
 
         <div class="stats">
-          <div>{{currentSegmentName}}</div>
-          <div class="up-next">up next {{nextSegmentName}}</div>
-          <div>
-            Time Elapsed: {{totalTimeFormatted}}
-          </div>
+         <div class="up-next-label">up next...</div>
+          <div class="up-next-segment-name">{{nextSegmentName}}</div>
+
         </div>
         <div class="play-pause-wrapper" >
           <md-button class="md-icon-button play-pause-item" @click="this.start"><md-icon>play_arrow</md-icon></md-button>
@@ -143,6 +151,16 @@
       }else{
         this.initializeNewWorkout()
       }
+
+      window.onresize = () => {
+        const maxCircleWidth = 600
+        const minCircleWidth = 300
+        const maxCircleThickness = 40
+        const minCircleThickness = 20
+        this.circleWidth = window.innerWidth * .5 > maxCircleWidth ? maxCircleWidth : window.innerWidth * .5 < minCircleWidth ? minCircleWidth : window.innerWidth * .5
+        this.circleThickness = window.innerWidth * .03 > maxCircleThickness ? maxCircleThickness : window.innerWidth * .03 < minCircleThickness ? minCircleThickness : window.innerWidth * .03
+      }
+
     },
     data() {
       return {
@@ -175,6 +193,8 @@
           isInfinity: false,
           message: ''
         },
+        circleWidth: 300,
+        circleThickness: 30,
         menuVisible: false,
         theme: 'teal',
         currentSegmentTotalTime: 0,
@@ -422,7 +442,7 @@
       },
       currentPercentage(){
        return 100 - (this.timeLeft/this.currentSegmentTotalTime) * 100
-      }
+      },
     },
     components: {Vue100vh}
   };
@@ -451,16 +471,37 @@
   .time-section {
     width: 100vw;
     display: grid;
-    grid-template-rows: 1fr 56px;
+    grid-template-rows: 3fr 15fr 3fr 56px;
+
+    @media only screen and (max-width: 700px) {
+      grid-template-rows: 8fr 15fr 8fr 56px;
+    }
+
   }
 
   .workoutPage{
     display:grid;
   }
 
-  .up-next {
-    font-size: .5em;
+  .stats{
+    display:grid;
+    grid-template-rows: 1fr 3fr;
   }
+
+  .up-next-label{
+    font-size:2em;
+    color:gray;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .up-next-segment-name{
+    font-size:4em;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+  }
+
 
   .bottom-bar-wrapper{
     width:100%;
@@ -494,15 +535,73 @@
     justify-content: center;
     width:100%;
   }
-  .percentage-middle-circle{
+
+  .percentage-middle-circle {
     position: absolute;
-    display:flex;
-     align-items: center;
-    height:100%;
+    display: grid;
+    align-items: center;
+    height: 100%;
+    font-size: 7vw;
+
     justify-content: center;
-    width:100%;
+    width: 100%;
+
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+
+    .time-elapsed{
+      display:flex;
+      align-items: center;
+      justify-content: center;
+      font-size:3vw;
+    }
+
+    .current-time{
+      display:flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
+
   .progress-spinner-wrapper{
     position:relative;
+  }
+
+  .current-segment-text {
+    font-size: 5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media only screen and (max-width: 500px) {
+      font-size:3em;
+    }
+  }
+
+
+  @media only screen and (min-width: 400px) {
+    /*.percentage-middle-circle {*/
+    /*  font-size: 3em;*/
+    /*}*/
+  }
+
+  @media screen and (max-width: 700px) {
+    .percentage-middle-circle {
+      font-size: 3em;
+
+      .time-elapsed{
+        font-size: .35em;
+      }
+    }
+
+  }
+
+  @media screen and (min-width: 1200px) {
+    .percentage-middle-circle {
+      font-size: 6em;
+
+      .time-elapsed{
+        font-size: .5em;
+      }
+    }
   }
 </style>
