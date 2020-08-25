@@ -2,6 +2,10 @@
   <no-ssr>
   <Vue100vh>
   <div class="page-container">
+    <div>
+      <button @click="showWorkoutPage" id="bottom-bar-item-home" >WORKOUT</button>
+      <button @click="showEditPage" id="bottom-bar-item-pages">EDIT</button>
+    </div>
 
      <div v-if="editPageActive">
     <h1>Timer</h1>
@@ -9,11 +13,11 @@
     <div>
       WORKOUT NAME: <span v-if="editWorkoutName"><input v-model="workoutName"></span>
       <span v-else> {{workoutName}}</span>
-      <md-button class="md-primary md-raised" @click="initializeNewWorkout">New Workout</md-button>
-      <md-button class="md-primary md-raised" @click="toggleEditWorkoutName"> Edit workout name</md-button>
-      <md-button class="md-primary md-raised" @click="saveWorkout" :disabled="saveWorkoutButtonDisabled">Save Workout</md-button>
+      <button class=" " @click="initializeNewWorkout">New Workout</button>
+      <button class=" " @click="toggleEditWorkoutName"> Edit workout name</button>
+      <button class=" " @click="saveWorkout" :disabled="saveWorkoutButtonDisabled">Save Workout</button>
 
-      <md-button class="md-primary md-raised" @click="clearAllSavedWorkouts">Clear All Saved Workouts</md-button>
+      <button class=" " @click="clearAllSavedWorkouts">Clear All Saved Workouts</button>
     </div>
     <div>
     <h5>Saved Workouts:</h5>
@@ -23,8 +27,8 @@
 
     </div>
 
-    <md-button class="md-primary md-raised" @click="addSegment">Add Segment</md-button>
-    <md-button class="md-primary md-raised" @click="initSound">playsound</md-button>
+    <button class=" " @click="addSegment">Add Segment</button>
+    <button class=" " @click="initSound">playsound</button>
     <label>Time</label>
     <input v-model="timeToAdd">
     <label>Type</label>
@@ -52,31 +56,22 @@
             </span>
       <span v-else>{{segment.name}} {{ segment.time }} seconds</span>
 
-      <md-button class="md-primary md-raised" @click="moveUp(segment)" :disabled="isFirstItem(index)">up</md-button>
-      <md-button class="md-primary md-raised" @click="moveDown(segment)" :disabled="isLastItem(index)">down</md-button>
-      <md-button class="md-primary md-raised" @click="deleteFromList(segment)">delete</md-button>
-      <md-button class="md-primary md-raised" @click="duplicate(segment)">duplicate</md-button>
-      <md-button class="md-primary md-raised" @click="toggleEdit(segment)"><span v-if="segment.editOn">Stop</span> Edit</md-button>
+      <button class=" " @click="moveUp(segment)" :disabled="isFirstItem(index)">up</button>
+      <button class=" " @click="moveDown(segment)" :disabled="isLastItem(index)">down</button>
+      <button class=" " @click="deleteFromList(segment)">delete</button>
+      <button class=" " @click="duplicate(segment)">duplicate</button>
+      <button class=" " @click="toggleEdit(segment)"><span v-if="segment.editOn">Stop</span> Edit</button>
     </div>
-       <md-button class="md-primary md-raised" @click="this.toggleRepeat">Toggle Repeat</md-button>
+       <button class=" " @click="this.toggleRepeat">Toggle Repeat</button>
   </div>
     <div v-if="workoutPageActive" class="workoutPage time-it-page">
 
       <div class="time-section">
         <div class="current-segment-text">{{currentSegmentName}}</div>
-        <div class="progress-spinner-wrapper">
-          <md-progress-spinner md-mode="determinate" :md-diameter="circleWidth" :md-stroke="circleThickness" :md-value="currentPercentage"></md-progress-spinner>
           <div class="percentage-middle-circle">
-            <div></div>
-            <div></div>
-            <div></div>
             <div class="current-time">{{timeLeftInIntervalFormatted}} </div>
             <div class="time-elapsed">Time Elapsed: {{totalTimeFormatted}}</div>
-            <div></div>
-            <div></div>
-            <div></div>
           </div>
-        </div>
 
         <div class="stats">
          <div class="up-next-label">up next...</div>
@@ -84,17 +79,14 @@
 
         </div>
         <div class="play-pause-wrapper" >
-          <md-button class="md-icon-button play-pause-item" @click="this.start"><md-icon>play_arrow</md-icon></md-button>
-          <md-button class="md-icon-button play-pause-item" @click="this.stopInterval"><md-icon>stop</md-icon></md-button>
-          <md-button class="md-icon-button play-pause-item" @click="this.togglePause">
+          <button class="md-icon-button play-pause-item" @click="this.start"><md-icon>play_arrow</md-icon></button>
+          <button class="md-icon-button play-pause-item" @click="this.stopInterval"><md-icon>stop</md-icon></button>
+          <button class="md-icon-button play-pause-item" @click="this.togglePause">
             <md-icon v-if="this.pause">play_arrow</md-icon>
             <md-icon v-else>pause</md-icon>
-          </md-button>
+          </button>
         </div>
-
-
       </div>
-
     </div>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -105,20 +97,6 @@
          data-ad-slot="7703035200"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-<!--    <script>-->
-<!--      (adsbygoogle = window.adsbygoogle || []).push({});-->
-<!--    </script>-->
-    <md-snackbar :md-position="snackbar.position" :md-duration="snackbar.isInfinity ? Infinity : snackbar.duration" :md-active.sync="snackbar.showSnackbar" md-persistent>
-      <span>{{snackbar.message}}</span>
-      <md-button class="md-primary" @click="snackbar.showSnackbar = false">Close</md-button>
-    </md-snackbar>
-    <div class="bottom-bar-wrapper">
-      <md-bottom-bar md-type="shift">
-        <md-bottom-bar-item @click="showWorkoutPage" id="bottom-bar-item-home" md-label="Workout" md-icon="directions_run"></md-bottom-bar-item>
-        <md-bottom-bar-item @click="showEditPage" id="bottom-bar-item-pages" md-label="Edit" md-icon="edit"></md-bottom-bar-item>
-      </md-bottom-bar>
-    </div>
-
   </div>
   </Vue100vh>
   </no-ssr>
@@ -425,9 +403,9 @@
           's': seconds,
         };
       },
-      formatTime({h,m,s}){
-        return `${h}:${m}:${s}`
-      }
+      formatTime({m, s}) {
+        return `${m}:${s}`;
+      },
 
     },
     computed: {
@@ -451,6 +429,9 @@
 </script>
 
 <style lang="scss" scoped>
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
   .phone-viewport {
     width: 322px;
     height: 200px;
@@ -460,7 +441,6 @@
     border: 1px solid rgba(#000, .26);
     background: rgba(#000, .06);
   }
-
 
   .time-wrapper {
     button {
@@ -502,7 +482,6 @@
     align-items: center;
   }
 
-
   .bottom-bar-wrapper{
     width:100%;
   }
@@ -510,7 +489,7 @@
   .page-container{
     display:grid;
     height:100%;
-    grid-template-rows: 1fr 56px;
+    grid-template-rows: 1fr 20fr 56px;
   }
 
   .md-progress-spinner{
@@ -528,7 +507,6 @@
     justify-self: center;
   }
   .md-progress-spinner{
-    position: absolute;
     display:flex;
     align-items: center;
     height:100%;
@@ -537,7 +515,6 @@
   }
 
   .percentage-middle-circle {
-    position: absolute;
     display: grid;
     align-items: center;
     height: 100%;
@@ -546,7 +523,8 @@
     justify-content: center;
     width: 100%;
 
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    font-family: 'Press Start 2P', cursive;
+    grid-template-rows: 5fr 1fr ;
 
     .time-elapsed{
       display:flex;
@@ -559,6 +537,7 @@
       display:flex;
       align-items: center;
       justify-content: center;
+      font-size:18vw;
     }
   }
 
@@ -589,7 +568,7 @@
       font-size: 3em;
 
       .time-elapsed{
-        font-size: .35em;
+        font-size: 8vw;
       }
     }
 
