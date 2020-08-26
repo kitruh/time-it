@@ -40,28 +40,35 @@
     <label>Name</label>
     <input v-model="intervalName"/>
 
-    <div v-for="(segment, index) in timeSegments" :key="segment.id">
+       <div class="edit-row">
+         <div>#</div>
+         <div>Time</div>
+         <div>Name</div>
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div>
+         <template  v-for="(segment, index) in timeSegments">
 
-            <span v-if="segment.editOn">
-                    <label>Time</label>
-                <input v-model="segment.time">
-                <label>Type</label>
-                <select v-model="segment.type">
-                  <option disabled value="">Please select one</option>
-                  <option>Workout</option>
-                  <option>Rest</option>
-                </select>
-                <label>Name</label>
-                <input v-model="segment.name"/>
-            </span>
-      <span v-else>{{segment.name}} {{ segment.time }} seconds</span>
 
-      <button class=" " @click="moveUp(segment)" :disabled="isFirstItem(index)">up</button>
-      <button class=" " @click="moveDown(segment)" :disabled="isLastItem(index)">down</button>
-      <button class=" " @click="deleteFromList(segment)">delete</button>
-      <button class=" " @click="duplicate(segment)">duplicate</button>
-      <button class=" " @click="toggleEdit(segment)"><span v-if="segment.editOn">Stop</span> Edit</button>
-    </div>
+
+           <div>{{index + 1}}</div>
+           <div>
+             <input v-model="segment.time">
+           </div>
+           <div>
+             <input v-model="segment.name"/>
+           </div>
+
+
+
+           <button class=" " @click="moveUp(segment)" :disabled="isFirstItem(index)">up</button>
+           <button class=" " @click="moveDown(segment)" :disabled="isLastItem(index)">down</button>
+           <button class=" " @click="deleteFromList(segment)">delete</button>
+           <button class=" " @click="duplicate(segment)">duplicate</button>
+         </template>
+
+       </div>
        <button class=" " @click="this.toggleRepeat">Toggle Repeat</button>
   </div>
     <div v-if="workoutPageActive" class="workoutPage time-it-page">
@@ -79,11 +86,11 @@
 
         </div>
         <div class="play-pause-wrapper" >
-          <button class="md-icon-button play-pause-item" @click="this.start"><md-icon>play_arrow</md-icon></button>
-          <button class="md-icon-button play-pause-item" @click="this.stopInterval"><md-icon>stop</md-icon></button>
-          <button class="md-icon-button play-pause-item" @click="this.togglePause">
-            <md-icon v-if="this.pause">play_arrow</md-icon>
-            <md-icon v-else>pause</md-icon>
+          <button class="span-button play-pause-item" @click="this.start"><span>play_arrow</span></button>
+          <button class="span-button play-pause-item" @click="this.stopInterval"><span>stop</span></button>
+          <button class="span-button play-pause-item" @click="this.togglePause">
+            <span v-if="this.pause">play_arrow</span>
+            <span v-else>pause</span>
           </button>
         </div>
       </div>
@@ -103,8 +110,6 @@
 </template>
 <script>
   import {v4 as uuidv4} from 'uuid';
-  import 'vue-material/dist/vue-material.min.css'
-  import 'vue-material/dist/theme/default.css'
 
   import Vue100vh from 'vue-div-100vh'
 
@@ -583,4 +588,15 @@
       }
     }
   }
+
+.edit-row{
+  grid-gap: 1em 2em;
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-auto-rows:1em;
+  font-size:2em;
+  input{
+    font-size:1em;
+  }
+}
 </style>
