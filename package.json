@@ -12,13 +12,15 @@
     "test": "jest"
   },
   "dependencies": {
+    "array-move": "^3.0.1",
     "moment": "^2.25.3",
     "node-sass": "^4.14.1",
     "nuxt": "^2.0.0",
     "sass-loader": "^8.0.2",
     "tone": "^13.8.25",
     "uuid": "^8.0.0",
-    "vue-div-100vh": "^0.1.2"
+    "vue-div-100vh": "^0.1.2",
+    "vue-smooth-dnd": "^0.8.1"
   },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.27",
