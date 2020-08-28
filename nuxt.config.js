@@ -16,6 +16,8 @@ export default {
       {rel:"stylesheet", href:"//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons"}
     ],
     script: [
+      {src:"https://kit.fontawesome.com/6d22836f9a.js", crossorigin:"anonymous"},
+
       {"data-ad-client":"ca-pub-5363460947226243",
         async: "async",
         src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'}

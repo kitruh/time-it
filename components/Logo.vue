@@ -40,33 +40,41 @@
     <label>Name</label>
     <input v-model="intervalName"/>
 
+
+       <div class="interval-item-list-edit">
+         <div class="interval-item-list-edit__number-count">
+           <div v-for="(segment, index) in timeSegments" :key="segment.id">
+             <div v-if="index === 0" style="color:white;">{{index}}</div>
+             <div v-else>{{index}}</div>
+           </div>
+         </div>
+         <Container @drop="onDrop">
+           <Draggable v-for="(segment, index) in timeSegments" :key="segment.id">
+             <template v-if="index === 0 ">
+               <div class="draggable-item-title" >
+                 <div>
+                   Workout Name
+                 </div>
+                 <div>
+                   Workout length (seconds)
+                 </div>
+               </div>
+             </template>
+             <div v-else class="draggable-item">
+               <div>
+                 <input placeholder="Enter name of workout" v-model="segment.name"/>
+               </div>
+               <div>
+                 <input placeholder="Enter time in seconds" v-model="segment.time">
+               </div>
+               <i class="fas fa-trash" @click="deleteFromList(segment)"></i>
+             </div>
+           </Draggable>
+         </Container>
+
+       </div>
+
        <div class="edit-row">
-         <div>#</div>
-         <div>Time</div>
-         <div>Name</div>
-         <div></div>
-         <div></div>
-         <div></div>
-         <div></div>
-         <template  v-for="(segment, index) in timeSegments">
-
-
-
-           <div>{{index + 1}}</div>
-           <div>
-             <input v-model="segment.time">
-           </div>
-           <div>
-             <input v-model="segment.name"/>
-           </div>
-
-
-
-           <button class=" " @click="moveUp(segment)" :disabled="isFirstItem(index)">up</button>
-           <button class=" " @click="moveDown(segment)" :disabled="isLastItem(index)">down</button>
-           <button class=" " @click="deleteFromList(segment)">delete</button>
-           <button class=" " @click="duplicate(segment)">duplicate</button>
-         </template>
 
        </div>
        <button class=" " @click="this.toggleRepeat">Toggle Repeat</button>
@@ -82,7 +90,7 @@
 
         <div class="stats">
          <div class="up-next-label">up next...</div>
-          <div class="up-next-segment-name">{{nextSegmentName}}</div>
+        <div class="up-next-segment-name">{{nextSegmentName}}</div>
 
         </div>
         <div class="play-pause-wrapper" >
@@ -113,6 +121,8 @@
 
   import Vue100vh from 'vue-div-100vh'
 
+  import { Container, Draggable } from "vue-smooth-dnd";
+  import arrayMove from 'array-move';
   export default {
     mounted(){
       this.countDownAudio = new Audio('countdown-and-start-belltone.wav')
@@ -186,6 +196,9 @@
            };
     },
     methods: {
+      onDrop(dropResult) {
+        this.timeSegments = arrayMove(this.timeSegments, dropResult.removedIndex, dropResult.addedIndex)
+      },
       start() {
 
         this.countDownAudio.currentTime=1
@@ -427,7 +440,8 @@
        return 100 - (this.timeLeft/this.currentSegmentTotalTime) * 100
       },
     },
-    components: {Vue100vh}
+    components: {Vue100vh, Container, Draggable }
+
   };
 
 
@@ -589,7 +603,7 @@
     }
   }
 
-.edit-row{
+.edit-row {
   grid-gap: 1em 2em;
   display:grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
@@ -599,4 +613,26 @@
     font-size:1em;
   }
 }
+
+.draggable-item{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.draggable-item-title{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.interval-item-list-edit{
+  display:grid;
+  grid-template-columns: 1fr 9fr;
+}
+
+.interval-item-list-edit__number-count{
+  display: grid;
+  grid-template-columns: 1fr;
+
+}
+
 </style>
