@@ -45,7 +45,21 @@ export default {
   /*
   ** Nuxt.js modules
   */
-  modules: [],
+  modules: [
+      '@nuxtjs/axios',
+    '@nuxtjs/auth'],
+
+  auth: {
+    strategies: {
+      google: {
+        client_id: '456651353888-9se35a5sgmmhlrdjemqc03oe00fi2lsn.apps.googleusercontent.com',
+        client_secret: 'SwJMolhT1Wd-lMRkoYqxqIIy'
+      },
+    }
+  },
+  router: {
+    middleware: ['auth']
+  },
   /*
   ** Build configuration
   */
