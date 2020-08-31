@@ -27,40 +27,39 @@
 
     </div>
 
-    <button class=" " @click="addSegment">Add Segment</button>
-    <button class=" " @click="initSound">playsound</button>
-    <label>Time</label>
-    <input v-model="timeToAdd">
-    <label>Type</label>
-    <select v-model="typeToAdd">
-      <option disabled value="">Please select one</option>
-      <option>Workout</option>
-      <option>Rest</option>
-    </select>
-    <label>Name</label>
-    <input v-model="intervalName"/>
+    <button class="" @click="addSegment">Add Segment</button>
+<!--    <label>Time</label>-->
+<!--    <input v-model="timeToAdd">-->
+<!--    <label>Type</label>-->
+<!--    <select v-model="typeToAdd">-->
+<!--      <option disabled value="">Please select one</option>-->
+<!--      <option>Workout</option>-->
+<!--      <option>Rest</option>-->
+<!--    </select>-->
+<!--    <label>Name</label>-->
+<!--    <input v-model="intervalName"/>-->
 
 
        <div class="interval-item-list-edit">
+         <div ></div>
+
+           <div class="draggable-item-title" >
+             <div>
+               Workout Name
+             </div>
+             <div>
+               Workout length (seconds)
+             </div>
+           </div>
          <div class="interval-item-list-edit__number-count">
            <div v-for="(segment, index) in timeSegments" :key="segment.id">
-             <div v-if="index === 0" style="color:white;">{{index}}</div>
-             <div v-else>{{index}}</div>
+             <div >{{index + 1}}</div>
            </div>
          </div>
          <Container @drop="onDrop">
            <Draggable v-for="(segment, index) in timeSegments" :key="segment.id">
-             <template v-if="index === 0 ">
-               <div class="draggable-item-title" >
-                 <div>
-                   Workout Name
-                 </div>
-                 <div>
-                   Workout length (seconds)
-                 </div>
-               </div>
-             </template>
-             <div v-else class="draggable-item">
+
+             <div class="draggable-item">
                <div>
                  <input placeholder="Enter name of workout" v-model="segment.name"/>
                </div>
