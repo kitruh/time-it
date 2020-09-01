@@ -49,12 +49,20 @@ export default {
       '@nuxtjs/axios',
     '@nuxtjs/auth'],
 
+  axios: {
+    baseUrl: 'http://localhost:3000/api'
+  },
+
   auth: {
     strategies: {
       google: {
-        client_id: '456651353888-9se35a5sgmmhlrdjemqc03oe00fi2lsn.apps.googleusercontent.com',
-        client_secret: 'SwJMolhT1Wd-lMRkoYqxqIIy'
+        client_id: '131447866697-aakrlen9rlfe495rhn65b8m9hir143fg.apps.googleusercontent.com'
       },
+      local: {
+        endpoints: {
+          login: {url: '/sessions', method: 'post', propertyName: 'token'}
+        }
+      }
     }
   },
   router: {
