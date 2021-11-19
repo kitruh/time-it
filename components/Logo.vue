@@ -2,11 +2,24 @@
   <no-ssr>
     <Vue100vh>
       <div class="page-container">
-        <div>
-          <button @click="showWorkoutPage" id="bottom-bar-item-home">
+        <div class="top">
+          <div
+            :style="workoutTabSelected"
+            class="top-tab"
+            @click="showWorkoutPage"
+            id="bottom-bar-item-home"
+          >
             WORKOUT
-          </button>
-          <button @click="showEditPage" id="bottom-bar-item-pages">EDIT</button>
+          </div>
+          <div
+            :style="editTabSelected"
+            class="top-tab"
+            @click="showEditPage"
+            id="bottom-bar-item-pages"
+          >
+            EDIT
+          </div>
+          <!-- <button @click="toggleMute">toggle mute</button> -->
         </div>
 
         <div v-if="editPageActive">
@@ -40,16 +53,6 @@
           </div>
 
           <button class="" @click="addSegment">Add Segment</button>
-          <!--    <label>Time</label>-->
-          <!--    <input v-model="timeToAdd">-->
-          <!--    <label>Type</label>-->
-          <!--    <select v-model="typeToAdd">-->
-          <!--      <option disabled value="">Please select one</option>-->
-          <!--      <option>Workout</option>-->
-          <!--      <option>Rest</option>-->
-          <!--    </select>-->
-          <!--    <label>Name</label>-->
-          <!--    <input v-model="intervalName"/>-->
 
           <div class="interval-item-list-edit">
             <div></div>
@@ -96,7 +99,9 @@
         </div>
         <div v-if="workoutPageActive" class="workoutPage time-it-page">
           <div class="time-section">
-            <div class="current-segment-text">{{ currentSegmentName }}</div>
+            <div class="current-segment-text">
+              {{ currentSegmentName ? currentSegmentName : "Lets workout" }}
+            </div>
             <div class="percentage-middle-circle">
               <div class="current-time">{{ timeLeftInIntervalFormatted }}</div>
               <div class="time-elapsed">
@@ -105,26 +110,30 @@
             </div>
 
             <div class="stats">
-              <div class="up-next-label">up next...</div>
-              <div class="up-next-segment-name">{{ nextSegmentName }}</div>
+              <div class="up-next-label">up next... {{ nextSegmentName }}</div>
             </div>
             <div class="play-pause-wrapper">
-              <button class="span-button play-pause-item" @click="this.start">
-                <span>play_arrow</span>
-              </button>
-              <button
-                class="span-button play-pause-item"
-                @click="this.stopInterval"
-              >
-                <span>stop</span>
-              </button>
-              <button
-                class="span-button play-pause-item"
-                @click="this.togglePause"
-              >
-                <span v-if="this.pause">play_arrow</span>
-                <span v-else>pause</span>
-              </button>
+              <div></div>
+              <div class="play-pause-direct-wrapper">
+                <img
+                  class="play-arrow"
+                  src="~/assets/play.svg"
+                  @click="this.start"
+                />
+
+                <img
+                  class="play-arrow"
+                  src="~/assets/stop.svg"
+                  @click="this.stopInterval"
+                />
+
+                <img
+                  class="play-arrow"
+                  src="~/assets/pause.svg"
+                  @click="this.togglePause"
+                />
+              </div>
+              <div></div>
             </div>
           </div>
         </div>
@@ -239,7 +248,8 @@ export default {
       theme: "teal",
       currentSegmentTotalTime: 0,
       workoutPageActive: true,
-      editPageActive: false
+      editPageActive: false,
+      muted: false
     };
   },
   methods: {
@@ -441,6 +451,20 @@ export default {
       this.editPageActive = false;
       this.workoutPageActive = true;
     },
+    toggleMute() {
+      if (!this.muted) {
+        document.querySelectorAll("video, audio").forEach(elem => {
+          elem.muted = true;
+          elem.pause();
+          this.muted = true;
+        });
+      } else {
+        document.querySelectorAll("video, audio").forEach(elem => {
+          elem.muted = false;
+          this.muted = false;
+        });
+      }
+    },
     secondsToTime(totalSeconds) {
       let hours = Math.floor(totalSeconds / (60 * 60));
 
@@ -481,6 +505,16 @@ export default {
     },
     currentPercentage() {
       return 100 - (this.timeLeft / this.currentSegmentTotalTime) * 100;
+    },
+    editTabSelected() {
+      if (this.editPageActive) {
+        return "background-color:rgb(48, 48, 48); font-weight:bold; text-decoration:underline;";
+      }
+    },
+    workoutTabSelected() {
+      if (this.workoutPageActive) {
+        return "background-color:rgb(48, 48, 48); font-weight:bold; text-decoration:underline;";
+      }
     }
   },
   components: { Vue100vh, Container, Draggable }
@@ -500,12 +534,6 @@ export default {
   background: rgba(#000, 0.06);
 }
 
-.time-wrapper {
-  button {
-    color: #006bd6;
-  }
-}
-
 .time-section {
   width: 100vw;
   display: grid;
@@ -517,11 +545,6 @@ export default {
 
 .workoutPage {
   display: grid;
-}
-
-.stats {
-  display: grid;
-  grid-template-rows: 1fr 3fr;
 }
 
 .up-next-label {
@@ -579,8 +602,6 @@ export default {
   justify-content: center;
   width: 100%;
 
-  font-family: "PT Mono", monospace;
-
   .time-elapsed {
     display: flex;
     align-items: center;
@@ -592,7 +613,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18vw;
+    font-size: 30vw;
   }
 }
 
@@ -666,5 +687,29 @@ export default {
 .interval-item-list-edit__number-count {
   display: grid;
   grid-template-columns: 1fr;
+}
+
+.play-arrow {
+  width: 20%;
+  justify-self: center;
+}
+.play-pause-direct-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.top-tab {
+  background-color: black;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  &:hover {
+    background-color: rgb(48, 48, 48);
+  }
 }
 </style>
