@@ -116,21 +116,23 @@
               <div></div>
               <div class="play-pause-direct-wrapper">
                 <img
+                  v-if="pause"
                   class="play-arrow"
                   src="~/assets/play.svg"
                   @click="this.start"
                 />
 
                 <img
+                  v-if="!pause"
                   class="play-arrow"
-                  src="~/assets/stop.svg"
-                  @click="this.stopInterval"
+                  src="~/assets/pause.svg"
+                  @click="this.togglePause"
                 />
 
                 <img
                   class="play-arrow"
-                  src="~/assets/pause.svg"
-                  @click="this.togglePause"
+                  src="~/assets/stop.svg"
+                  @click="this.stopInterval"
                 />
               </div>
               <div></div>
@@ -225,7 +227,7 @@ export default {
       typeToAdd: "",
       repeat: true,
       intervalName: "",
-      pause: false,
+      pause: true,
       amount: 50,
       currentSegmentName: "",
       nextSegmentName: "",
@@ -261,11 +263,11 @@ export default {
       );
     },
     start() {
+      this.pause = false;
       this.countDownAudio.currentTime = 1;
       this.countDownAudio.play();
       this.countDownAudio.pause();
 
-      this.totalTime = 0;
       if (this.interval != null) {
         return;
       }
